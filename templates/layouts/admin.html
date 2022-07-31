@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %} - ePad</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
+        <meta name="author"  content="Indonusamedia"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Global stylesheets -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+
+        <link href="/static/css/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
+
+        <link href="/static/css/layout.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/components.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/colors.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Core JS files -->
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="/static/js/plugins/jquery-ui/jquery-ui.js"></script>
+        <script src="/static/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/js/plugins/notifications/sweet_alert.min.js"></script>
+
+        <!-- partials javascript-->
+
+        <script src="/static/js/plugins/forms/styling/uniform.min.js"></script>
+        <script src="/static/js/plugins/forms/selects/select2.min.js"></script>
+        
+        <script src="/static/js/app.js"></script>
+        <script src="/static/js/form.js"></script>
+        <script src="/static/js/notification.js"></script>
+        <script src="/static/js/plugins/loaders/blockui.min.js"></script>
+        <script src="/static/js/plugins/notifications/jgrowl.min.js"></script>
+        <script src="/static/js/plugins/notifications/noty.min.js"></script>
+        <script src="/static/js/plugins/notifications/pnotify.min.js"></script>
+        <script src="/static/js/plugins/loaders/spinbox.js"></script>
+        <script src="/static/js/spin.js"></script>
+
+        <script>
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            if (token) {
+                $(document).ready(function ($) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                });
+            } else {
+                console.error('CSRF token not found.');
+            }
+
+            var swalInit = swal.mixin({
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-danger',
+                    denyButton: 'btn btn-light',
+                    input: 'form-control'
+                }
+            });
+
+            // Override Noty defaults
+            Noty.overrideDefaults({
+                theme: 'limitless',
+                layout: 'topRight',
+                type: 'alert',
+                timeout: 1500
+            });
+        </script>
+        {% block scripts %}{% endblock %}
+
+        <style type="text/css">
+            .layout-boxed-bg {
+                /* The image used */
+                background-image: url("http://localhost:49000/static/images/widget_background_colors.png");
+                /* overflow:scroll !important; */
+                /* Full height */
+                height: 100%; 
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            .content-inner {
+                scroll-behavior: smooth;
+            }
+
+            .content-inner {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-direction: column;
+                flex-direction: column;
+                height: 100%;
+                position: relative;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .swal2-container.swal2-backdrop-show, .swal2-container.swal2-noanimation {
+                background-color: rgba(0,0,0,.35);
+            }
+
+            .has-error .select2-selection {
+                border-color : #f44336 !important;
+            }
+         </style>
+
+        <style>@keyframes nodeInserted{from{outline-color:#fff}to{outline-color:#000}}@-moz-keyframes nodeInserted{from{outline-color:#fff}to{outline-color:#000}}@-webkit-keyframes nodeInserted{from{outline-color:#fff}to{outline-color:#000}}@-ms-keyframes nodeInserted{from{outline-color:#fff}to{outline-color:#000}}@-o-keyframes nodeInserted{from{outline-color:#fff}to{outline-color:#000}}.ace-save-state{animation-duration:10ms;-o-animation-duration:10ms;-ms-animation-duration:10ms;-moz-animation-duration:10ms;-webkit-animation-duration:10ms;animation-delay:0s;-o-animation-delay:0s;-ms-animation-delay:0s;-moz-animation-delay:0s;-webkit-animation-delay:0s;animation-name:nodeInserted;-o-animation-name:nodeInserted;-ms-animation-name:nodeInserted;-moz-animation-name:nodeInserted;-webkit-animation-name:nodeInserted}</style>
+        {% block style %}{% endblock %}
+
+        <link href="/static/css/spin.css" rel="stylesheet">
+    </head>
+    <body class="layout-boxed-bg mt-2 sidebar-xs">
+        <div style="display: none; height: 100%; width: 100%;" id="spinner-preview"></div>
+        <!-- Boxed layout wrapper -->
+        <div class="d-flex flex-column flex-1 layout-boxed">
+            {% include "partials/admin/header.html" %}
+
+            <!-- Page content -->
+            <div class="page-content">
+                {% include "partials/admin/sidebar.html" %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+            <!-- Page content -->
+        </div>
+        <!-- /boxed layout wrapper -->
+
+        {% block js %}{% endblock %}
+    </body>
+</html>
