@@ -101,6 +101,12 @@ def update_taxpayer_registration():
     response = taxpayer_registration.taxpayer_registration(app).update(params)
     return response.json_v1()
 
+@app.route("/v1/api/taxpayer-registration/<string:registration_id>", methods=["DELETE"])
+def delete_taxpayer_registration(registration_id):
+    params = request.args.to_dict()
+    response = taxpayer_registration.taxpayer_registration(app).destroy(params, registration_id)
+    return response.json_v1()
+
 @app.route("/v1/api/regency/lists/<int:province_id>", methods=["GET"])
 def map_regency_lists(province_id):
     params = request.args.to_dict()

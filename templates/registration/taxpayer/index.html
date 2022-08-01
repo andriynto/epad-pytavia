@@ -78,117 +78,10 @@
 
 {% block js %}
 <script type="text/javascript">
+    var table;
+
     document.addEventListener('DOMContentLoaded', function() {
-        $.fn.dataTable.ext.errMode = 'throw';
-        if ($.fn.DataTable.isDataTable('#table-taxpayer')) {
-            $('#table-taxpayer').dataTable().fnDestroy();
-        }
-
-        var table = $('#table-taxpayer').DataTable({
-            autoWidth: false,
-            serverSide: true,
-            processing: true,
-            pagingType: "full_numbers",
-            ordering: false,
-            pagingType: "full_numbers",
-            dom: '<"datatable-header datatable-header-accent"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
-            language: {
-                search: '<span>Pencarian Nama Wajib Pajak :</span> _INPUT_',
-                searchPlaceholder: 'Full Text...',
-                lengthMenu: '<span>Show:</span> _MENU_',
-                paginate: {
-                    'first': 'Pertama',
-                    'last': 'Terakhir',
-                    'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
-                    'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
-                }
-            },
-            lengthMenu: [15, 20, 25, 50, 75, 100],
-            displayLength: 10,
-            "ajax": {
-                type: 'GET',
-                url: '/v1/api/taxpayer-registration',
-                beforeSend: function() {
-                    // spinner = Rats.UI.LoadAnimation.start();
-                },
-                dataSrc: function(response) {
-                    return response.data
-                }
-            },
-            "columns": [{
-                        data: "name",
-                        className: "text-left",
-                        "width": "20%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            return data + '<br>' + row.identity_number
-                        }
-                    },
-                    {
-                        data: "register_transaction",
-                        className: "text-center wrap",
-                        "width": "8%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            return data.toUpperCase()
-                        }
-                    },
-                    {
-                        data: "registration_number",
-                        className: "text-center wrap",
-                        "width": "10%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            return data
-                        }
-                    },
-                    {
-                        data: "date_record",
-                        className: "text-center wrap",
-                        "width": "10%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            const d = new Date(data)
-                            const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d)
-                            const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d)
-                            const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d)  
-
-                            return da + ', ' + mo + ' - ' +ye
-                        }
-                    },
-                    {
-                        data: "status",
-                        className: "text-center wrap",
-                        "width": "5%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            if(data == 'Draft') {
-                                return '<span class="badge badge-warning">Draft</span>'
-                            }else if(data == 'Reject') {
-                                return '<span class="badge badge-danger">Reject</span>'
-                            }
-                        }
-                    },
-                    {
-                        data: "id",
-                        className: "text-center wrap",
-                        "width": "5%",
-                        "orderable": false,
-                        render: function(data, type, row, meta) {
-                            return '<div class="list-icons">\
-                                    <div class="dropdown position-static">\
-                                        <a href="#" class="list-icons-item" data-toggle="dropdown" aria-expanded="false"><i class="icon-menu9"></i></a>\
-                                        <div class="dropdown-menu dropdown-menu-right" style="">\
-                                            <a href="/taxpayer-registration/'+data+'/edit" class="dropdown-item"><i class="icon-pencil7"></i> Sunting Wajib Pajak</a>\
-                                            <div class="dropdown-divider"></div>\
-                                            <a class="dropdown-item btn-delete bg-danger" data-id="'+data+'"><i class="icon-cross2"></i> Hapus Wajib Pajak</a>\
-                                        </div>\
-                                    </div>\
-                                </div>';
-                        }
-                    }
-                ]
-        });
+        taxpayer.lists();
 
         $('#table-taxpayer').on( 'click', '.btn-delete', function () {
             var id = $(this).data('id');
@@ -205,74 +98,193 @@
                 confirmButtonText: 'Hapus'
             }).then((result) => {
                 if (result.value) {
-                    $.ajax({
-                        url: baseUrl + '/taxpayer/' + id,
-                        type: 'DELETE',
+                    taxpayer.destroy(id)
+                }
+            });
+        });
+    });
+
+    var taxpayer = function() {
+        return {
+            lists: function() {
+                $.fn.dataTable.ext.errMode = 'throw';
+                if ($.fn.DataTable.isDataTable('#table-taxpayer')) {
+                    $('#table-taxpayer').dataTable().fnDestroy();
+                }
+
+                table = $('#table-taxpayer').DataTable({
+                    autoWidth: false,
+                    serverSide: true,
+                    processing: true,
+                    pagingType: "full_numbers",
+                    ordering: false,
+                    pagingType: "full_numbers",
+                    dom: '<"datatable-header datatable-header-accent"fBl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+                    language: {
+                        search: '<span>Pencarian Nama Wajib Pajak :</span> _INPUT_',
+                        searchPlaceholder: 'Full Text...',
+                        lengthMenu: '<span>Show:</span> _MENU_',
+                        paginate: {
+                            'first': 'Pertama',
+                            'last': 'Terakhir',
+                            'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
+                            'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+                        }
+                    },
+                    lengthMenu: [15, 20, 25, 50, 75, 100],
+                    displayLength: 10,
+                    "ajax": {
+                        type: 'GET',
+                        url: '/v1/api/taxpayer-registration',
                         beforeSend: function() {
-                            spinner = Rats.UI.LoadAnimation.start();
+                            // spinner = Rats.UI.LoadAnimation.start();
                         },
-                        success: function (response) {
-                            if(response.status) {
-                                new Noty({
-                                    text: 'Data berhasil dihapus',
-                                    type: 'error'
-                                }).show();
-
-                                Rats.UI.LoadAnimation.stop(spinner);
-
-                                setTimeout(function() {
-                                    swalInit.fire({
-                                        icon : "success",
-                                        title: "Proses Berhasil",
-                                        text : "Penghapusan data wajib pajak berhasil",
-                                    }).then((result) => {
-                                        DatatableAPI.init();
-                                    });
-                                }, 200);
-
-                                return false;
-                            }
-                        },
-                        error  : function(response) {
-                            if (response.readyState == 4) {
-                                
-                                if(response.status == 522) {
-                                    swalInit.fire({
-                                        icon : "warning",
-                                        title: "Penghapusan data tidak berhasil",
-                                        text : response.responseJSON.message
-                                    }).then((result) => {
-                                        Rats.UI.LoadAnimation.stop(spinner);
-                                    });
-
-                                    return false;
+                        dataSrc: function(response) {
+                            return response.data
+                        }
+                    },
+                    "columns": [{
+                                data: "name",
+                                className: "text-left",
+                                "width": "20%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    return data + '<br>' + row.identity_number
                                 }
-                                
+                            },
+                            {
+                                data: "register_transaction",
+                                className: "text-center wrap",
+                                "width": "8%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    return data.toUpperCase()
+                                }
+                            },
+                            {
+                                data: "registration_number",
+                                className: "text-center wrap",
+                                "width": "10%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    return data
+                                }
+                            },
+                            {
+                                data: "date_record",
+                                className: "text-center wrap",
+                                "width": "10%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    const d = new Date(data)
+                                    const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d)
+                                    const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d)
+                                    const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d)  
+
+                                    return da + ', ' + mo + ' - ' +ye
+                                }
+                            },
+                            {
+                                data: "status",
+                                className: "text-center wrap",
+                                "width": "5%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    if(data == 'Draft') {
+                                        return '<span class="badge badge-warning">Draft</span>'
+                                    }else if(data == 'Reject') {
+                                        return '<span class="badge badge-danger">Reject</span>'
+                                    }
+                                }
+                            },
+                            {
+                                data: "id",
+                                className: "text-center wrap",
+                                "width": "5%",
+                                "orderable": false,
+                                render: function(data, type, row, meta) {
+                                    return '<div class="list-icons">\
+                                            <div class="dropdown position-static">\
+                                                <a href="#" class="list-icons-item" data-toggle="dropdown" aria-expanded="false"><i class="icon-menu9"></i></a>\
+                                                <div class="dropdown-menu dropdown-menu-right" style="">\
+                                                    <a href="/taxpayer-registration/'+data+'/edit" class="dropdown-item"><i class="icon-pencil7"></i> Sunting Wajib Pajak</a>\
+                                                    <div class="dropdown-divider"></div>\
+                                                    <a class="dropdown-item btn-delete bg-danger" data-id="'+data+'"><i class="icon-cross2"></i> Hapus Wajib Pajak</a>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                                }
+                            }
+                        ]
+                });
+
+
+                $('.dataTables_filter input').unbind();
+                $('.dataTables_filter input').bind('keyup', function(e) {
+                    if(e.keyCode == 13) {
+                        table.search(this.value).draw();
+                    }
+
+                    return;
+                });
+            },
+
+            destroy: function(id) {
+                $.ajax({
+                    url: '/v1/api/taxpayer-registration/' + id,
+                    type: 'DELETE',
+                    beforeSend: function() {
+                        spinner = Rats.UI.LoadAnimation.start();
+                    },
+                    success: function (response) {
+                        new Noty({
+                            text: 'Data berhasil dihapus',
+                            type: 'error'
+                        }).show();
+
+                        Rats.UI.LoadAnimation.stop(spinner);
+
+                        setTimeout(function() {
+                            swalInit.fire({
+                                icon : "success",
+                                title: "Proses Berhasil",
+                                text : "Penghapusan data wajib pajak berhasil",
+                            }).then((result) => {
+                                taxpayer.lists();
+                            });
+                        }, 200);
+
+                        return false;
+                    },
+                    error  : function(response) {
+                        if (response.readyState == 4) {
+                            
+                            if(response.status == 522) {
                                 swalInit.fire({
-                                    icon : "error",
-                                    title: "Terjadi kesalahan",
-                                    text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                                    icon : "warning",
+                                    title: "Penghapusan data tidak berhasil",
+                                    text : response.responseJSON.message
                                 }).then((result) => {
                                     Rats.UI.LoadAnimation.stop(spinner);
                                 });
 
                                 return false;
                             }
+                            
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Terjadi kesalahan",
+                                text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                            }).then((result) => {
+                                Rats.UI.LoadAnimation.stop(spinner);
+                            });
+
+                            return false;
                         }
-                    });
-                }
-            });
-        });
-    
-
-        $('.dataTables_filter input').unbind();
-        $('.dataTables_filter input').bind('keyup', function(e) {
-            if(e.keyCode == 13) {
-                table.search(this.value).draw();
+                    }
+                });
             }
-
-            return;
-        });
-    });
+        }
+    }();
 </script>
 {% endblock %}

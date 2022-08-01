@@ -11,10 +11,13 @@ class taxpayer_registration:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
+    # def
     def __init__(self, app):
         self.webapp = app
     # end def
 
+    # def lists
+    # Listing of the resource.
     def lists(self, params):
         from pytavia_core import helper
 
@@ -45,6 +48,9 @@ class taxpayer_registration:
                 "status"    : {
                     "$in"   : ["Draft", "Reject"]
                 },
+                "archived_timestamp" : {
+                    "$eq" : ""
+                },
                 "$text" : { "$search" : search },
             })
             
@@ -53,7 +59,11 @@ class taxpayer_registration:
             taxpayer    = self.mgdDB.taxpayer_registration.find({
                 "status"    : {
                     "$in"   : ["Draft", "Reject"]
+                },
+                "archived_timestamp" : {
+                    "$eq" : ""
                 }
+
             }).skip(int(start)).limit(int(limit)).sort([("date_record" , -1)])
             total_data  = self.mgdDB.taxpayer_registration.find({}).count()
 
@@ -78,14 +88,20 @@ class taxpayer_registration:
         response.put( "recordsFiltered" ,  int(totalFiltered) )
 
         return response
+    #end def
 
+    # def lists
+    # Display the specified resource.
     def get(self, params, registration_id):
         from pytavia_core import helper
         from bson.objectid import ObjectId
 
         data = []
         taxpayer = self.mgdDB.taxpayer_registration.find_one({
-            "pkey": registration_id
+            "pkey": registration_id,
+            "archived_timestamp" : {
+                "$eq" : ""
+            }
         })
 
         employeeRecord       = self.mgdDB.employee.find_one({ "_id" : ObjectId(taxpayer['fk_record_by']['pkey'])})
@@ -147,7 +163,10 @@ class taxpayer_registration:
         response.put('data', data)
 
         return response
+    # end def
 
+    # def store
+    # Store a newly created resource in storage.
     def store(self, params):
         from pytavia_core import helper
         
@@ -257,7 +276,10 @@ class taxpayer_registration:
             # end try
         else:
             return helper.response_msg("PROCESS_FAILED", "Entity Error", { "errors" : validation }, 422)
+    # end def
 
+    # def
+    # Update the specified resource in storage.
     def update(self, param):
         from pytavia_core import helper
         from bson.objectid import ObjectId
@@ -266,7 +288,7 @@ class taxpayer_registration:
         pkey = data['pkey']
 
         response = helper.response_msg(
-            "LIST TAXPAYER SUCCESS",
+            "UPDATE TAXPAYER SUCCESS",
             "", {},
             200
         )
@@ -344,16 +366,39 @@ class taxpayer_registration:
                 self.webapp.logger.debug( "exception occured ..." )
         else:
             return helper.response_msg("PROCESS_FAILED", "Entity Error", { "errors" : validation }, 422)
+    # end def
 
-        # data = []
-        # taxpayer = self.mgdDB.taxpayer_registration.find_one({
-        #     "pkey": registration_id
-        # })
+    #def 
+    # Deleted the specified resource.
+    def destroy(self, param, registration_id):
+        from pytavia_core import helper
+        from pytavia_stdlib import utils
 
-    def destroy(self, param):
-        response = None
+        response = helper.response_msg(
+            "DELETE TAXPAYER SUCCESS",
+            "", {},
+            200
+        )
+
+        timestamp, timestamp_str    = utils._get_current_timestamp()
+
+        self.mgdDB.taxpayer_registration.update_one(
+            { "pkey" : registration_id },
+            {
+                "$set" : {
+                    "archived_timestamp" : timestamp,
+                    "archived_timestamp_str" : timestamp_str
+                }
+            }
+        )
+
+        response.put('data', "DELETE")
+
         return response
+    # end def
 
+    # def
+    # validation payload
     def validate_payload(payload : dict):
         from cerberus          import Validator
         from datetime import datetime
@@ -485,4 +530,6 @@ class taxpayer_registration:
             return validator.errors
         else:
             return "pass"
+    # end def
+
 # end class
