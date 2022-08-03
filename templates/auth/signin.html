@@ -130,6 +130,15 @@
                                     title: "Validation Data Required",
                                     text : "Please check again data",
                                 });
+
+                                swalInit.fire({
+                                    icon : "warning",
+                                    title: "Validation Data Required",
+                                    text : "Please check again data",
+                                }).then((result) => {
+                                    Rats.UI.LoadAnimation.stop(spinner);
+                                });
+                                
                             }, 500);
 
                             return false;
@@ -150,6 +159,8 @@
                                         $('#validation_msg_username').html(response.responseJSON.message_data.errors.username);
                                     }
                                 });
+
+                                Rats.UI.LoadAnimation.stop(spinner);
                             });
 
                             return false;
