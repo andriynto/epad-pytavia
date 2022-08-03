@@ -1,0 +1,178 @@
+{% extends 'layouts/login.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="card mb-0">
+    <div class="card-header bg-primary-700" align="center">ELEKTRONIFIKASI PENDAPATAN DAERAH </div>
+    <div class="card-body">
+        <div class="text-center mb-3">
+            
+        </div>
+
+        <form id="form-login" class="login-form form-validate wmin-sm-400" method="post" accept-charset="utf-8">
+            <div class="form-group form-group-feedback form-group-feedback-left">
+                <input type="text" class="form-control" id="username" name="username" value="" maxlength="60" autocomplete="off" placeholder="Username / Email">
+                <div class="form-control-feedback">
+                    <i class="icon-user text-muted"></i>
+                 </div>
+                 <div id="validation_msg_username" class="invalid-feedback validation-invalid-label"></div>
+            </div>
+
+            <div class="form-group form-group-feedback form-group-feedback-left">
+                <input type="password" class="form-control" name="password" value="" id="password" maxlength="40" autocomplete="off" placeholder="Kata Sandi">
+                <div class="form-control-feedback">
+                   <i class="icon-key text-muted"></i>
+                </div>
+                <div id="validation_msg_password" class="invalid-feedback validation-invalid-label"></div>
+             </div>
+
+             <div class="form-group">
+                <div id="validation_msg_authentication" class="invalid-feedback validation-invalid-label"></div>
+             </div>
+
+             <div class="form-group d-flex align-items-center">
+                <div class="form-check mb-0">
+                    <label class="form-check-label">
+                        <div class="uniform-checker" id="uniform-showPass">
+                            <input name="remember_me" id="remember_me" type="checkbox" class="form-input-styled" autocomplete="off" data-fouc>
+                        </div>
+                        Ingatkan saya
+                    </label>
+                </div>
+                <a href="" class="ml-auto">Lupa Kata Sandi?</a>
+             </div>
+
+             <div class="form-group text-center text-muted content-divider">
+                <span class="px-2"></span>
+            </div>
+             
+            <div class="row">
+                <div class="col-lg-6">
+                    <a href="{{ url_for('signup_view') }}" id="submitsignin" class="btn btn-light btn-block"><i class="icon-user-plus"></i> Create Account</a>
+                </div>
+
+                <div class="col-lg-6">
+                    <button type="submit" id="submitsignin" class="btn btn-danger btn-block">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#form-login').submit(function(event) {
+            event.preventDefault();
+            let form = $(this);
+
+            form.find('div.form-group').removeClass('has-error');
+            form.find('.invalid-feedback').html('');
+
+            var data = new Object();
+            data.username = $('#username').val(),
+            data.password = $('#password').val(),
+
+            $.ajax({
+                url: '/v1/api/signin',
+                type: 'POST',
+                contentType: "application/json;",
+                data: JSON.stringify(data),
+                beforeSend: function() {
+                    $("input[type=text], input[type=date], input[type=email], input[type=password], textarea").removeClass('is-invalid');
+                    $('.invalid').empty();
+                    $('#btn-submit').html('\
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\
+                        <span class="">Loading...</span>\
+                    ').prop("disabled", true);
+                },
+                success: function (response) {
+                    $('#btn-submit').html('Login').prop("disabled", false);
+                    $("input").attr("disabled", false);
+                    
+                    if(response.status) {
+                        swalInit.fire({
+                            icon : "success",
+                            title: "Success",
+                            text : response.message_data,
+                        }).then((result) => {
+                            window.location = '/dashboard';
+                        });
+                    }
+                },
+                error  : function(response) {
+                    if (response.readyState == 4) {
+                        $("input, textarea, select").attr("disabled", false);
+                        $('#btn-submit').html('Sign in').prop("disabled", false);
+
+                        if(response.status === 422 || response.status === 423) {
+                            var errors = response.responseJSON.message_data.errors;
+                            console.log(errors);
+                            $.each(errors, function(key, error) {
+                                
+                                var item = form.find('input[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find('select[name='+ key +']').parent().addClass('has-error');
+                                item = (item.length > 0) ? item : form.find('textarea[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find("input[name='"+ key +"[]']");
+
+                                if(key == 'password') {
+                                    item.addClass("is-invalid");
+                                    $('#validation_msg_'+key).html(error);
+                                }else {
+                                    item.addClass("is-invalid");
+                                    $('#validation_msg_'+key).html(error);
+                                }
+                            });
+
+                            setTimeout(function() {
+                                swalInit.fire({
+                                    icon : "warning",
+                                    title: "Validation Data Required",
+                                    text : "Please check again data",
+                                });
+                            }, 500);
+
+                            return false;
+                        }
+
+                        else if(response.status === 400) {
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Something Error",
+                                text : 'Authentication error!!'
+                            }).then((result) => {
+                                errors =  response.responseJSON.message_data.errors
+                                $.each(errors, function(key, error) {
+                                    if(key == 'authentication') {
+                                        $('#validation_msg_authentication').html(response.responseJSON.message_data.errors.authentication);
+                                    }else {
+                                        $('#username').addClass("is-invalid");
+                                        $('#validation_msg_username').html(response.responseJSON.message_data.errors.username);
+                                    }
+                                });
+                            });
+
+                            return false;
+                        }
+
+                        swalInit.fire({
+                            icon : "error",
+                            title: "Something Error",
+                            text : "We found any problem, please contact your administrator",
+                        }).then((result) => {
+                            Rats.UI.LoadAnimation.stop(spinner);
+                            $('#validation_msg_email').html('Terjadi kesalahan dalam otorisasi');
+                        });
+
+                        $("input, textarea, select").attr("disabled", false);
+
+                        return false;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

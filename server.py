@@ -1,6 +1,5 @@
 import json
 import time
-from urllib import response
 import pymongo
 import sys
 import urllib.parse
@@ -12,6 +11,8 @@ sys.path.append("pytavia_stdlib")
 sys.path.append("pytavia_storage")
 sys.path.append("pytavia_modules")
 sys.path.append("pytavia_modules/rest_api_controller")
+
+sys.path.append("pytavia_modules/authentication") 
 sys.path.append("pytavia_modules/registration") 
 
 # adding comments
@@ -21,22 +22,19 @@ from pytavia_core import config
 from pytavia_core import model
 from pytavia_stdlib import idgen
 
+from rest_api_controller import authenticaton
 from rest_api_controller import taxpayer_registration
 from rest_api_controller import map_regency
 from rest_api_controller import map_district
 from rest_api_controller import map_village
 
 from registration import registration_taxpayer
+from authentication import auth
 ##########################################################
 
 from flask import request
 from flask import render_template
 from flask import Flask
-from flask import session
-from flask import make_response
-from flask import redirect
-from flask import url_for
-from flask import flash
 
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -50,10 +48,26 @@ app.secret_key = config.G_FLASK_SECRET
 app.db_update_context, app.db_table_fks = model.get_db_table_paths(model.db)
 
 
-########################## CALLBACK API ###################################
+########################## CALLBACK  ###################################
 @app.route("/hello", methods=["GET"])
 def api_hi():
     return 'check conn!!'
+# end def
+
+# def
+@app.route("/", methods=["GET"])
+def signin_view():
+    params = request.args.to_dict()
+    response = auth.auth(app).signin( params )
+    return response
+# end def
+
+# def
+@app.route("/signup", methods=["GET"])
+def signup_view():
+    params = request.args.to_dict()
+    response = auth.auth(app).signup( params )
+    return response
 # end def
 
 @app.route("/taxpayer-registration", methods=["GET"])
@@ -76,6 +90,20 @@ def create_registration():
     response = registration_taxpayer.registration_taxpayer(app).create( params )
     return response
 # end def
+
+
+########################## CALLBACK API ###################################
+@app.route("/v1/api/signin", methods=["POST"])
+def signin():
+    params = request.args.to_dict()
+    response = authenticaton.authenticaton(app).signin(params)
+    return response.json_v1()
+
+@app.route("/v1/api/signup", methods=["POST"])
+def signup():
+    params = request.args.to_dict()
+    response = authenticaton.authenticaton(app).signup(params)
+    return response.json_v1()
 
 @app.route("/v1/api/taxpayer-registration", methods=["GET"])
 def lists_taxpayer_registration():

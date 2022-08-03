@@ -1,0 +1,209 @@
+{% extends 'layouts/login.html' %}
+
+{% block title %}Signup Account{% endblock %}
+
+{% block content %}
+<form id="form-signup" class="flex-fill" method="post" accept-charset="utf-8">
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+            <div class="card mb-0">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="icon-plus3 icon-2x text-success border-success border-3 rounded-pill p-3 mb-3 mt-1"></i>
+                        <h5 class="mb-0">Create account</h5>
+                    </div>
+
+                    <div class="form-group form-group-feedback form-group-feedback-left">
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Fullname" autocomplete="off">
+                        <div class="form-control-feedback">
+                            <i class="icon-user-plus text-muted"></i>
+                        </div>
+                        <div id="validation_msg_name" class="invalid-feedback validation-invalid-label"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Email" autocomplete="off">
+                                <div class="form-control-feedback">
+                                    <i class="icon-envelope text-muted"></i>
+                                </div>
+                                <div id="validation_msg_email" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Username" autocomplete="off">
+                                <div class="form-control-feedback">
+                                    <i class="icon-user-check text-muted"></i>
+                                </div>
+                                <div id="validation_msg_username" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Create password" autocomplete="off">
+                                <div class="form-control-feedback">
+                                    <i class="icon-user-lock text-muted"></i>
+                                </div>
+                                <div id="validation_msg_password" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Repeat password" autocomplete="off">
+                                <div class="form-control-feedback">
+                                    <i class="icon-user-lock text-muted"></i>
+                                </div>
+                                <div id="validation_msg_password_confirmation" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center text-muted content-divider">
+                        <span class="px-2"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="{{ url_for('signin_view') }}" id="submitsignin" class="btn btn-light btn-block"><i class="icon-arrow-left7"></i> Kembali</a>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <button type="submit" id="submitsignin" class="btn btn-danger btn-block">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#form-signup').submit(function(event) {
+            event.preventDefault();
+            let form = $(this);
+
+            form.find('div.form-group').removeClass('has-error');
+            form.find('.invalid-feedback').html('');
+
+            var data = new Object();
+            data.name                  = $('#name').val();
+            data.username              = $('#username').val();
+            data.email                 = $('#email').val();
+            data.password              = $('#password').val();
+            data.password_confirmation = $('#password_confirmation').val();
+
+            $.ajax({
+                url: '/v1/api/signup',
+                type: 'POST',
+                // contentType: "application/json",
+                data: data,
+                dataType:"json",
+                beforeSend: function() {
+                    $("input[type=text], input[type=date], input[type=email], input[type=password], textarea").removeClass('is-invalid');
+                    $("input[type=select]").parent().removeClass('has-error');
+                    $('.validation_msg_')
+                    $('#btn-submit').html('\
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\
+                        <span class="">Loading...</span>\
+                    ').prop("disabled", true);
+
+                    spinner = Rats.UI.LoadAnimation.start();
+                },
+                success: function (response) {
+                    $('#btn-submit').html('Login').prop("disabled", false);
+                    $("input").attr("disabled", false);
+                    
+                    swalInit.fire({
+                        icon : "success",
+                        title: "Success",
+                        text : response.message_data,
+                    }).then((result) => {
+                        window.location = '/';
+                    });
+                },
+                error  : function(response) {
+                    if (response.readyState == 4) {
+                        $("input, textarea, select").attr("disabled", false);
+                        $('#btn-submit').html('Sign in').prop("disabled", false);
+
+                        if(response.status === 422 || response.status === 423) {
+                            var errors = response.responseJSON.message_data.errors;
+                            console.log(errors)
+                            $.each(errors, function(key, error) {
+                                var item = form.find('input[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find('select[name='+ key +']').parent().addClass('has-error');
+                                item = (item.length > 0) ? item : form.find('textarea[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find("input[name='"+ key +"[]']");
+
+                                if(key == 'password_confirmation') {
+                                    $('#password, #password_confirmation').addClass("is-invalid");
+                                    $('#validation_msg_password_confirmation').html(error);
+                                }else {
+                                    if(key == 'password') {
+                                        item.addClass("is-invalid");
+                                        $('#validation_msg_'+key).html(error);
+                                    }else {
+                                        item.addClass("is-invalid");
+                                        $('#validation_msg_'+key).html(error);
+                                    }
+                                }
+                            });
+
+                            setTimeout(function() {
+                                swalInit.fire({
+                                    icon : "warning",
+                                    title: "Validation Data Required",
+                                    text : "Please check again data",
+                                });
+
+                                Rats.UI.LoadAnimation.stop(spinner);
+                            }, 500);
+
+                            return false;
+                        }
+
+                        else if(response.status === 400) {
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Something Error",
+                                text : response.responseJSON.message_data
+                            }).then((result) => {
+                                $('#email, #username').addClass("is-invalid");
+                                $('#validation_msg_email').html(response.responseJSON.message_data);
+
+                                Rats.UI.LoadAnimation.stop(spinner);
+                            });
+
+                            return false;
+                        }
+
+                        swalInit.fire({
+                            icon : "error",
+                            title: "Something Error",
+                            text : "We found any problem, please contact your administrator",
+                        }).then((result) => {
+                            $('#email').addClass("is-invalid");
+                            $('#validation_msg_email').html('Terjadi kesalahan dalam otorisasi');
+                            Rats.UI.LoadAnimation.stop(spinner);
+                        });
+
+                        $("input, textarea, select").attr("disabled", false);
+
+                        return false;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

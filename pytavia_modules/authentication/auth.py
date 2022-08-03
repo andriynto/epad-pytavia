@@ -21,29 +21,20 @@ sys.path.append("pytavia_modules")
 from flask             import render_template_string
 from flask             import render_template
 
-class registration_taxpayer:
-
+class auth:
     def __init__(self, app):
         self.webapp = app
 
-    def process(self, param):
+    def signin(self, param):
         response = render_template(
-            "registration/taxpayer/index.html"
+            "auth/signin.html"
         )
 
         return response
 
-    def create(self, param):
+    def signup(self, param):
         response = render_template(
-            "registration/taxpayer/create.html"
+            "auth/signup.html"
         )
 
         return response
-
-    def edit(self, param, id):
-        response = render_template(
-            "registration/taxpayer/edit.html", id = id
-        )
-
-        return response
-# end class

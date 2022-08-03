@@ -135,6 +135,15 @@ db = {
         "misc"                        : {},
     },
 
+    "users"          : {
+        "__db__readable__name__"      : "users",
+        "name"                       : "",
+        "username"                   : "",
+        "email"                      : "",
+        "password"                   : {},
+        "role"                       : "",        
+    },
+
     "map_province"                    : {
         "__db__readable__name__"      : "map_province",
         "code"                        : "",
