@@ -49,10 +49,11 @@ class authenticaton:
             if login_user:
                 if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
                     session['username'] = username
+                    session['name']     = login_user['name']
                     session['role']     = login_user['role']
 
                     response.put('status_code', 200)
-                    response.put('data', 'login success')
+                    response.put('data', 'Login Success')
                 else:
                     response.put('status_code', 400)
                     response.put('data', { 'errors' : { 'authentication' : 'Invalid username or email/password combination!!' }})
@@ -155,6 +156,22 @@ class authenticaton:
 
         user       = self.mgdDB.users
         existing_user = user.find_one({'name' : req['username']})
+
+    def signout(self, param):
+        from pytavia_core import helper
+
+        response = helper.response_msg(
+            "LOGOUT PROCESS",
+            "", {},
+            401
+        )
+
+        session.clear()
+
+        response.put('status_code', 401)
+        response.put('data', 'Logout out success, clear all session')
+
+        return response
 
     def validation_payload_signin(payload):
         from cerberus          import Validator

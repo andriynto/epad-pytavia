@@ -20,6 +20,7 @@ sys.path.append("pytavia_modules")
 
 from flask             import render_template_string
 from flask             import render_template
+from flask             import Flask, redirect, session, url_for
 
 class auth:
     def __init__(self, app):
@@ -38,3 +39,7 @@ class auth:
         )
 
         return response
+
+    def signout(self, param):
+        session.clear()
+        return redirect(url_for("login_view"))

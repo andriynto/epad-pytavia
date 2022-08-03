@@ -81,6 +81,7 @@
                 contentType: "application/json;",
                 data: JSON.stringify(data),
                 beforeSend: function() {
+                    spinner = Rats.UI.LoadAnimation.start();
                     $("input[type=text], input[type=date], input[type=email], input[type=password], textarea").removeClass('is-invalid');
                     $('.invalid').empty();
                     $('#btn-submit').html('\
@@ -92,15 +93,13 @@
                     $('#btn-submit').html('Login').prop("disabled", false);
                     $("input").attr("disabled", false);
                     
-                    if(response.status) {
-                        swalInit.fire({
-                            icon : "success",
-                            title: "Success",
-                            text : response.message_data,
-                        }).then((result) => {
-                            window.location = '/dashboard';
-                        });
-                    }
+                    swalInit.fire({
+                        icon : "success",
+                        title: "Success",
+                        text : response.message_data,
+                    }).then((result) => {
+                        window.location = '/dashboard';
+                    });
                 },
                 error  : function(response) {
                     if (response.readyState == 4) {
@@ -109,7 +108,6 @@
 
                         if(response.status === 422 || response.status === 423) {
                             var errors = response.responseJSON.message_data.errors;
-                            console.log(errors);
                             $.each(errors, function(key, error) {
                                 
                                 var item = form.find('input[name='+ key +']');

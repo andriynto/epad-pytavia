@@ -480,6 +480,16 @@
                                     return false;
                                 }
 
+                                else if (response.status == 401) {
+                                    swalInit.fire({
+                                        icon : "error",
+                                        title: "Session Ended",
+                                        text : "Your session end, please relogin..",
+                                    }).then((result) => {
+                                        window.location = '/login';
+                                    });
+                                }
+
                                 swalInit.fire({
                                     icon : "error",
                                     title: "Terjadi kesalahan",

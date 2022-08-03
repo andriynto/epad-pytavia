@@ -137,10 +137,22 @@
                         type: 'GET',
                         url: '/v1/api/taxpayer-registration',
                         beforeSend: function() {
-                            // spinner = Rats.UI.LoadAnimation.start();
+                            spinner = Rats.UI.LoadAnimation.start();
                         },
                         dataSrc: function(response) {
+                            Rats.UI.LoadAnimation.stop(spinner);
                             return response.data
+                        },
+                        error: function(error) {
+                            if (error && error.status == 401) {
+                                swalInit.fire({
+                                    icon : "error",
+                                    title: "Session Ended",
+                                    text : "Your session end, please relogin..",
+                                }).then((result) => {
+                                    window.location = '/login';
+                                });
+                            }
                         }
                     },
                     "columns": [{
@@ -269,6 +281,16 @@
                                 });
 
                                 return false;
+                            }
+
+                            else if(response.status == 401) {
+                                swalInit.fire({
+                                    icon : "error",
+                                    title: "Session Ended",
+                                    text : "Your session end, please relogin..",
+                                }).then((result) => {
+                                    window.location = '/login';
+                                });
                             }
                             
                             swalInit.fire({

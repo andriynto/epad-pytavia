@@ -41,7 +41,7 @@
         <ul class="navbar-nav flex-row align-items-center h-100">
             <li class="nav-item nav-item-dropdown-lg dropdown">
                 <a href="#" class="navbar-nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown">
-                    <span>Andryanto</span>
+                    <span>{{ session['name'] }}</span>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right wmin-lg-250 py-2">
@@ -67,7 +67,7 @@
                         </span>
                     </div>
 
-                    <a href="">
+                    <a href="{{ url_for('logout_view') }}">
                         <div class="dropdown-item d-flex py-2">
                             <div class="flex-1">
                                 <div class="font-weight-semibold">Logout</div>
