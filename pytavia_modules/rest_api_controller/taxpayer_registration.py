@@ -1,5 +1,6 @@
 from collections       import namedtuple
-from flask             import jsonify, request
+from queue import Empty
+from flask             import jsonify, request, url_for
 
 from pytavia_core      import database
 from pytavia_core      import config
@@ -117,6 +118,7 @@ class taxpayer_registration:
             'email'                 : taxpayer['email'],
             'birthplace'            : taxpayer['birthplace'],
             'birthdate'             : taxpayer['birthdate'],
+            'bussiness'             : taxpayer['bussiness'],
             'map_area'              : {
                 "province"           : taxpayer['map_area']['province'],
                 "province_name"      : taxpayer['map_area']['province_name'],
