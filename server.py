@@ -103,6 +103,14 @@ def logout_view():
     return response
 # end def
 
+# def
+@app.route("/iso8583", methods=["GET"])
+def iso8583_test():
+    params = request.args.to_dict()
+    response = auth.auth(app).iso( params )
+    return response
+# end def
+
 @app.route("/dashboard", methods=["GET"])
 @login_required
 def dashboard_view():

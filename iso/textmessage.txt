@@ -1,0 +1,42 @@
+# Analisa Data
+
+
+0210723840010A81800416627486002413249336000000000000000008040717240618671417240804701604011722080406170100024132492461209411011001222161  120912001701800920       FERDAWATY BR KARO             TIBAN HOUSING A1/4                           411011001SSPD BPHTB                                        2022      01222161            000003500000000000000000000000002000360030PEMKAB KARO                   
+
+MTI                                                 = 0201
+BITMAP                                              = 723840010A818004
+P2  - PAN                                           = (16)6274860024132493
+P3  - Processing Code                               = 360000
+P4  - AMOUNT TRANSACTION                            = 000000000000
+P7  - Transmission Date and Time                    = 0804071724
+P11 - System Trace Audit Number                     = 061867
+P12 - Local Transaction Time                        = 141724
+P13 - DATE EFFECTIVE                                = 0804
+P18 - Merchant Types (Kode Produksi)                = 7016
+P32 - Acquiring Institution Identification Code     = (04)0117
+P37 - Retrieval reference number                    = 220804061701
+P39 - RESPONSE CODE                                 = 00
+P41 - Card Acceptor Terminal Identification         = 024132492461
+P48 - Additional Data                               = (242)411011001222161  120912001701800920       FERDAWATY BR KARO             TIBAN HOUSING A1/4                           411011001SSPD BPHTB                                        2022      01222161            000003500000000000000000000000002000
+P49 - Transaction Currency Code                     = 360
+P62 - Additional Data                               = (030)PEMKAB KARO                   
+
+0210723840010A81800416627486002413249336000000000000000008040717240618671417240804701604011722080406170100024132492461209411011001222161  120912001701800920       FERDAWATY BR KARO             TIBAN HOUSING A1/4                           411011001SSPD BPHTB                                        2022      01222161            000003500000000000000000000000002000360030PEMKAB KARO                   
+0210723840010A81800416627486002413249336000000000000000008040717240618671417240804701604011722080406170100024132492461209411011001222161  120912001701800920       FERDAWATY BR KARO             TIBAN HOUSING A1/4                           411011001SSPD BPHTB                                        2022      01222161            000003500000000000000000000000002000360030PEMKAB KARO                   
+MTI                                                 = 0201
+BITMAP                                              = 723840010A818004
+P2  - PAN                                           = (16)6274860024132493
+P3  - Processing Code                               = 360000
+P4  - AMOUNT TRANSACTION                            = 000000000000
+P7  - Transmission Date and Time                    = 0804071724
+P11 - System Trace Audit Number                     = 061867
+P12 - Local Transaction Time                        = 141724
+P13 - DATE EFFECTIVE                                = 0804
+P18 - Merchant Types (Kode Produksi)                = 7016
+P32 - Acquiring Institution Identification Code     = (04)0117
+P37 - Retrieval reference number                    = 220804061701
+P39 - RESPONSE CODE                                 = 00
+P41 - Card Acceptor Terminal Identification         = 024132492461
+P48 - Additional Data                               = (242)411011001222161  120912001701800920       FERDAWATY BR KARO             TIBAN HOUSING A1/4                           411011001SSPD BPHTB                                        2022      01222161            000003500000000000000000000000002000
+P49 - Transaction Currency Code                     = 360
+P62 - Additional Data                               = (030)PEMKAB KARO                   

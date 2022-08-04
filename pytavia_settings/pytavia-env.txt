@@ -5,6 +5,7 @@ python2.7 get-pip.py
 
 # USEFUL LIBRARIES
 
+pip install pyiso8583
 pip3 install flask-socketio
 pip3 install cerberus
 pip3 install elasticsearch

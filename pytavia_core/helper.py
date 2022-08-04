@@ -55,7 +55,7 @@ class response_msg:
         self.response[self.mapping_data[key]] = value
     #end def
 
-    def get(self, key):
+    def get(self, key, value):
         if not (key in self.response):
             raise ValueError('SETTING_NON_EXISTING_FIELD', key, value)
         # end if
