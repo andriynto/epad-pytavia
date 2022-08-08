@@ -45,7 +45,7 @@ class taxpayer_registration:
                 ]
             )
 
-            taxpayer = self.mgdDB.taxpayer_registration.find({
+            search = {
                 "status"    : {
                     "$in"   : ["Draft", "Reject"]
                 },
@@ -53,9 +53,11 @@ class taxpayer_registration:
                     "$eq" : ""
                 },
                 "$text" : { "$search" : search },
-            })
+            }
+
+            taxpayer = self.mgdDB.taxpayer_registration.find(search)
             
-            total_data = taxpayer.count()
+            total_data = self.mgdDB.taxpayer_registration.count_documents(search)
         else:
             taxpayer    = self.mgdDB.taxpayer_registration.find({
                 "status"    : {
@@ -66,7 +68,7 @@ class taxpayer_registration:
                 }
 
             }).skip(int(start)).limit(int(limit)).sort([("date_record" , -1)])
-            total_data  = self.mgdDB.taxpayer_registration.find({}).count()
+            total_data  = self.mgdDB.taxpayer_registration.count_documents({})
 
         totalFiltered = total_data
 
