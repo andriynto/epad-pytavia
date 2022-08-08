@@ -15,6 +15,7 @@ sys.path.append("pytavia_modules/rest_api_controller")
 
 sys.path.append("pytavia_modules/authentication") 
 sys.path.append("pytavia_modules/registration") 
+sys.path.append("pytavia_modules/payment") 
 
 # adding comments
 from pytavia_stdlib import utils
@@ -26,10 +27,12 @@ from pytavia_stdlib import idgen
 from rest_api_controller import authenticaton
 from rest_api_controller import taxpayer_registration
 from rest_api_controller import bussiness_registration
+from rest_api_controller import transactionIso8583
 from rest_api_controller import map_regency
 from rest_api_controller import map_district
 from rest_api_controller import map_village
 
+from payment import transaction
 from registration import registration_taxpayer
 from authentication import auth, dashboard
 ##########################################################
@@ -152,6 +155,13 @@ def add_bussiness_registration(id):
     return response
 # end def
 
+@app.route("/payment", methods=["GET"])
+@login_required
+def payment_view():
+    params = request.args.to_dict()
+    response = transaction.transaction(app).process( params )
+    return response
+# end def
 
 ########################## CALLBACK API ###################################
 @app.route("/v1/api/signin", methods=["POST"])
@@ -206,6 +216,19 @@ def delete_taxpayer_registration(registration_id):
     params = request.args.to_dict()
     response = taxpayer_registration.taxpayer_registration(app).destroy(params, registration_id)
     return response.json_v1()
+
+@app.route("/v1/api/payment/encode-incoming-message", methods=["POST"])
+def payment_encoded():
+    params = request.args.to_dict()
+    response = transactionIso8583.transactionIso8583(app).encodedMessage(params)
+    return response.json_v1()
+
+@app.route("/v1/api/payment/decode-outgoing-message", methods=["POST"])
+def payment_decoded():
+    params = request.args.to_dict()
+    response = transactionIso8583.transactionIso8583(app).decodedMessage(params)
+    return response.json_v1()
+# end def
 
 @app.route("/v1/api/regency/lists/<int:province_id>", methods=["GET"])
 def map_regency_lists(province_id):

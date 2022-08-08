@@ -1,0 +1,334 @@
+{% extends 'layouts/admin.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="card">
+        <div class="card-header bg-light header-elements-inline">
+            <h6 class="card-title">INQUERY TRANSACTION</h6>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">MTI:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="mti" name="mti" placeholder="MTI" value="0200" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2 text-right">Primary Account Number:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="pan" name="pan" placeholder="PAN" value="6274860024132493" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">Processing Code:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="processing_code" name="processing_code" placeholder="PAN" value="360000" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2 text-right">Amount Transaction:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="amount_transaction" name="amount_transaction" placeholder="Amount Transaction" value="000000000000" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">Transmission Date and Time:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="transmission_datetime" name="transmission_datetime" placeholder="Transmission Date and Time" value="{{ transmission_datetime }}" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2">System Trace Audit Number:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="system_trace_audit_number" name="system_trace_audit_number" placeholder="System Trace Audit Number" value="008219" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">Time Local Transaction:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="time_local_transaction" name="time_local_transaction" placeholder="System Trace Audit Number" value="{{ time_transaction }}" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2 text-right">Date Local Transaction:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="date_local_transaction" name="date_local_transaction" placeholder="System Trace Audit Number" value="{{ date_transaction }}" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">Merchant Type:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="merchant_type" name="merchant_type" placeholder="Merchant Type" value="7016" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2 text-right">Acquiring Institution:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="acquiring_institution" name="acquiring_institution" placeholder="acquiring_institution" value="0117" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right"> Card Acceptor Terminal Identification:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="card_acceptor" name="card_acceptor" placeholder="Card Acceptor" value="250b3306" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <label class="col-form-label col-lg-2 text-right">Transaction Code:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="transaction_code" name="transaction_code" placeholder="Transaction Code" value="360" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right"> Retrieval Reference Number:</label>
+                        <div class="col-lg-4">
+                            <div class="input-group">
+                                <input type="text" id="retrieval_reference_number" name="retrieval_reference_number" placeholder="Card Acceptor" value="000011409278" readonly="" class="form-control text-center" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">STS Number:</label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <input type="text" id="additional_number" name="additional_number" placeholder="STS" value="1209140003000383722" maxlength="21" class="form-control text-left" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">Hex ISO8583:</label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <input type="text" id="hex_message" name="hex_message" placeholder="HEX" value="" class="form-control text-left" readonly autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">MESSAGE ISO8583:</label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <textarea type="text" id="incoming_message" name="incoming_message" placeholder="Message ISO8583" class="form-control text-left" autocomplete="off" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr> 
+                    <div class="form-group row">
+                        <div class="col-lg-2">&nbsp;</div>
+                        <div class="col-lg-4">
+                            <button type="button" id="btn-encode" class="btn btn-primary btn-block">Encode Message <i class="icon-chevron-right ml-2"></i></button>
+                        </div>
+                        <div class="col-lg-4">
+                            <button type="button" id="btn-send" class="btn btn-success btn-block" disabled>Send Message <i class="icon-chevron-right ml-2"></i></button>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-2 text-right">MESSAGE ISO8583 Outgoing:</label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <textarea type="text" id="outgoing_message" name="outgoing_message" placeholder="Outgoing Message ISO8583" class="form-control text-left" rows="4" autocomplete="off" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#btn-encode').click(function() {
+
+            var iso8583 = new Object();
+            iso8583.mti                 = $('#mti').val();
+            iso8583.pan                 = $('#pan').val();
+            iso8583.processing_code     = $('#processing_code').val();
+            iso8583.amount_transaction  = $('#amount_transaction').val();
+            iso8583.transmission_datetime  = $('#transmission_datetime').val();
+            iso8583.system_trace_audit_number  = $('#system_trace_audit_number').val();
+            iso8583.time_local_transaction     = $('#time_local_transaction').val();
+            iso8583.date_local_transaction     = $('#date_local_transaction').val();
+            iso8583.merchant_type              = $('#merchant_type').val();
+            iso8583.acquiring_institution      = $('#acquiring_institution').val();
+            iso8583.card_acceptor              = $('#card_acceptor').val();
+            iso8583.retrieval_reference_number = $('#retrieval_reference_number').val();
+            iso8583.transaction_code           = $('#transaction_code').val();
+            iso8583.additional_number          = $('#additional_number').val();
+            
+
+            $.ajax({
+                url: '/v1/api/payment/encode-incoming-message',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(iso8583),
+                contentType: "application/json",
+                beforeSend: function() {
+                    $("input[type=text], input[type=date], textarea").removeClass('is-invalid');
+                    $("input[type=select]").parent().removeClass('has-error');
+                    $('.validation_msg_')
+                    spinner = Rats.UI.LoadAnimation.start();
+                },
+                success: function (response) {
+                    $('#btn-submit').html('Simpan').prop("disabled", false);
+                    $("input, textarea, select").attr("disabled", false);
+
+                    $('#incoming_message').val(response.message_data.raw)
+                    $('#hex_message').val(response.message_data.hex)
+                    $('#btn-send').prop('disabled', false)
+                    Rats.UI.LoadAnimation.stop(spinner);
+                
+                },
+                error  : function(response) {
+                    if (response.readyState == 4) {
+                        $("input, textarea, select").attr("disabled", false);
+
+                        $('#btn-submit').html('Simpan').prop("disabled", false);
+                        if(response.status === 422 || response.status === 423) {
+                            var errors = response.responseJSON.message_data.errors;
+
+                            $.each(errors, function(key, error) {
+                                var item = form.find('input[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find('select[name='+ key +']').parent().addClass('has-error');
+                                item = (item.length > 0) ? item : form.find('textarea[name='+ key +']');
+                                item = (item.length > 0) ? item : form.find("input[name='"+ key +"[]']");
+
+                                item.addClass("is-invalid");
+                                // $("input[type=text][name=" + key +"]").after('<div class="invalid-feedback validation-invalid-label">' + error +'</div>');
+                                $('#validation_msg_'+key).html(error);
+                            });
+
+                            setTimeout(function() {
+                                Rats.UI.LoadAnimation.stop(spinner);
+                                swalInit.fire({
+                                    icon : "error",
+                                    title: "Terjadi kesalahan",
+                                    text : "Periksa kembali data yang anda masukkan",
+                                });
+                            }, 500);
+
+                            return false;
+                        }
+
+                        else if (response.status == 401) {
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Session Ended",
+                                text : "Your session end, please relogin..",
+                            }).then((result) => {
+                                window.location = '/login';
+                            });
+                        }
+
+                        swalInit.fire({
+                            icon : "error",
+                            title: "Terjadi kesalahan",
+                            text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                        }).then((result) => {
+                            Rats.UI.LoadAnimation.stop(spinner);
+                        });
+
+                        $("input, textarea, select").attr("disabled", false);
+
+                        return false;
+                    }
+                }
+            });
+        });
+    
+        $('#btn-send').click(function() {
+            var iso8583 = new Object();
+            iso8583.message          = $('#incoming_message').val();
+
+            $.ajax({
+                url: '/v1/api/payment/decode-outgoing-message',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(iso8583),
+                contentType: "application/json",
+                beforeSend: function() {
+                    $("input[type=text], input[type=date], textarea").removeClass('is-invalid');
+                    $("input[type=select]").parent().removeClass('has-error');
+                    $('.validation_msg_')
+                    spinner = Rats.UI.LoadAnimation.start();
+                },
+                success: function (response) {
+                    $("input, textarea, select").attr("disabled", false);
+
+                    $('#outgoing_message').val(response.message_data.message_out)
+                    Rats.UI.LoadAnimation.stop(spinner);
+                
+                },
+                error  : function(response) {
+                    if (response.readyState == 4) {
+                        $("input, textarea, select").attr("disabled", false);
+
+                        if (response.status == 401) {
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Session Ended",
+                                text : "Your session end, please relogin..",
+                            }).then((result) => {
+                                window.location = '/login';
+                            });
+                        }
+
+                        swalInit.fire({
+                            icon : "error",
+                            title: "Terjadi kesalahan",
+                            text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                        }).then((result) => {
+                            Rats.UI.LoadAnimation.stop(spinner);
+                        });
+
+                        $("input, textarea, select").attr("disabled", false);
+
+                        return false;
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
