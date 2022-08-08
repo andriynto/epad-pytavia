@@ -25,6 +25,7 @@ from pytavia_stdlib import idgen
 
 from rest_api_controller import authenticaton
 from rest_api_controller import taxpayer_registration
+from rest_api_controller import bussiness_registration
 from rest_api_controller import map_regency
 from rest_api_controller import map_district
 from rest_api_controller import map_village
@@ -103,14 +104,6 @@ def logout_view():
     return response
 # end def
 
-# def
-@app.route("/iso8583", methods=["GET"])
-def iso8583_test():
-    params = request.args.to_dict()
-    response = auth.auth(app).iso( params )
-    return response
-# end def
-
 @app.route("/dashboard", methods=["GET"])
 @login_required
 def dashboard_view():
@@ -119,6 +112,7 @@ def dashboard_view():
     return response
 # end def
 
+# def
 @app.route("/taxpayer-registration", methods=["GET"])
 @login_required
 def registration():
@@ -126,6 +120,13 @@ def registration():
     response = registration_taxpayer.registration_taxpayer(app).process( params )
     return response
 # end def
+
+@app.route("/taxpayer-registration/<string:id>", methods=["GET"])
+@login_required
+def show_registration(id):
+    params = request.args.to_dict()
+    response = registration_taxpayer.registration_taxpayer(app).show( params, id )
+    return response
 
 @app.route("/taxpayer-registration/<string:id>/edit", methods=["GET"])
 @login_required
@@ -140,6 +141,14 @@ def edit_registration(id):
 def create_registration():
     params = request.args.to_dict()
     response = registration_taxpayer.registration_taxpayer(app).create( params )
+    return response
+# end def
+
+@app.route("/bussiness-registration/<string:id>/add", methods=["GET"])
+@login_required
+def add_bussiness_registration(id):
+    params = request.args.to_dict()
+    response = bussiness_registration.bussiness_registration(app).add( params, id )
     return response
 # end def
 

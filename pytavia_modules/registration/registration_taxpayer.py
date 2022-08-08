@@ -40,6 +40,13 @@ class registration_taxpayer:
 
         return response
 
+    def show(self, param, id):
+        response = render_template(
+            "registration/taxpayer/show.html", id = id
+        )
+
+        return response
+
     def edit(self, param, id):
         response = render_template(
             "registration/taxpayer/edit.html", id = id

@@ -1,0 +1,363 @@
+
+{% extends 'layouts/admin.html' %}
+
+{% block title %}Registration Taxpayer{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="card">
+        <div class="card-header bg-light header-elements-inline">
+            <h6 class="card-title">PENDAFTARAN WAJIB PAJAK</h6>
+            <div class="header-elements">
+                <div class="list-icons">
+                    <a href="{{ url_for('show_registration', id = id) }}" class="btn btn-light btn-labeled btn-labeled-left btn-sm"><b><i class="icon-chevron-left"></i></b> Kembali</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form id="pendataan-data-usaha" class="form-validate" method="post" accept-charset="utf-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend class="font-weight-semibold"><i class="icon-magazine"></i> Formulir DPD-02</legend>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-form-label">Nomor Formulir:</label>
+                            <div class="col-md-4 col-lg-4">
+                                <input type="text" class="form-control bg-secondary text-white" placeholder="Nomor Formulir" value="" autocomplete="off" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-form-label">Jenis Wajib Pajak:</label>
+                            <div class="col-lg-4">
+                                <input type="text" class="form-control" name="taxpayer_type" placeholder="Jenis Wajib Pajak" value="" autocomplete="off" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-form-label">Kategori Pendapatan: <span class="text-danger">*</span></label>
+                            <div class="col-lg-6">
+                                <select data-placeholder="Pilih Kategori Pendapatan" name="tax_income_category" id="tax_income_category" class="form-control form-control-select2 select2-hidden-accessible" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off"></select>
+                                <div id="validation_msg_tax_income_category" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-form-label">Pendapatan: <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <select data-placeholder="Pilih Pendapatan" name="tax_income" id="tax_income" class="form-control form-control-select2 select2-hidden-accessible" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off"></select>
+                                <div id="validation_msg_tax_income" class="invalid-feedback validation-invalid-label"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend class="font-weight-semibold"><i class="icon-reading mr-2"></i> INFORMASI DATA USAHA</legend>
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="font-weight-semibold">Nama Merk / Usaha: <span class="text-danger">*</span></label>
+                                        <input type="text" name="name" id="name" class="form-control"  placeholder="Nama Merk / Usaha" autocomplete="off" >
+                                        <div id="validation_msg_name" class="invalid-feedback validation-invalid-label"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+
+        mapArea.init();
+
+        $('#form-taxpayer').submit(function(event) {
+            event.preventDefault();
+            let form = $(this);
+            
+            form.find('div.form-group').removeClass('has-error');
+            form.find('.invalid-feedback').html('');
+
+            let submitBtn = form.find("button[type=submit]");
+
+            var taxpayer = new Object();
+            if($('#register_transaction').val().length > 0) {
+                taxpayer.register_transaction = $('#register_transaction').val()
+            }
+
+            if($('input[name="taxpayer_type"]:checked').val().length > 0) {
+                taxpayer.taxpayer_type = $('input[name="taxpayer_type"]:checked').val()
+            }
+
+            if($('#name').val().length > 0) {
+                taxpayer.name = $('#name').val()
+            }
+
+            if($('#identity_number').val().length > 0) {
+                taxpayer.identity_number = $('#identity_number').val()
+            }
+
+            taxpayer.email = $('#email').val()
+
+            if($('#birthplace').val().length > 0) {
+                taxpayer.birthplace = $('#birthplace').val()
+            }
+
+            if($('#birthdate').val().length > 0) {
+                taxpayer.birthdate = $('#birthdate').val()
+            }
+
+            if($('#map_area').val() != "") {
+                taxpayer.map_area = $('#map_area').val()
+            }
+
+            taxpayer.phone = $('#phone').val()
+            taxpayer.handphone = $('#handphone').val()
+
+            if($('#address').val().length > 0) {
+                taxpayer.address = $('#address').val()
+            }
+
+            taxpayer.rt_number = $('#rt_number').val()
+            taxpayer.rw_number = $('#rw_number').val()
+            taxpayer.zip_code = $('#zip_code').val()
+
+            if($('#occupation').val().length > 0) {
+                taxpayer.occupation = $('#occupation').val()
+            }
+
+            taxpayer.working_company = $('#working_company').val()
+            taxpayer.working_company_address = $('#working_company_address').val()
+
+            if($('#date_record').val().length > 0) {
+                taxpayer.date_record = $('#date_record').val()
+            }
+
+            if($('#date_verification').val().length > 0) {
+                taxpayer.date_verification = $('#date_verification').val()
+            }
+
+            if($('#record_by').val().length > 0) {
+                taxpayer.record_by = $('#record_by').val()
+            }
+
+            if($('#verification_by').val().length > 0) {
+                taxpayer.verification_by = $('#verification_by').val()
+            }
+
+            swalInit.fire({
+                title: 'Konfirmasi penyimpanan',
+                text: "Apakah anda menyimpan data wajib pajak ?",
+                icon: 'info',
+                buttonsStyling: false,
+                showCancelButton: true,
+                reverseButtons : true,
+                allowOutsideClick: false,
+                cancelButtonText: 'Batal!',
+                confirmButtonText: 'Simpan'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '/v1/api/taxpayer-registration',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: JSON.stringify(taxpayer),
+                        contentType: "application/json",
+                        beforeSend: function() {
+                            $("input[type=text], input[type=date], textarea").removeClass('is-invalid');
+                            $("input[type=select]").parent().removeClass('has-error');
+                            $('.validation_msg_')
+                            spinner = Rats.UI.LoadAnimation.start();
+                        },
+                        success: function (response) {
+                            $('#btn-submit').html('Simpan').prop("disabled", false);
+                            $("input, textarea, select").attr("disabled", false);
+                            
+                            swalInit.fire({
+                                title: 'Pendaftaran berhasil',
+                                text: "Pendaftaran data wajib pajak berhasil",
+                                icon: 'success',
+                                buttonsStyling: false,
+                                reverseButtons : true,
+                                allowOutsideClick: false,
+                                confirmButtonText: 'Ok!'
+                            }).then((result) => {
+                                window.location.href = '/taxpayer-registration'
+                            });
+                        },
+                        error  : function(response) {
+                            if (response.readyState == 4) {
+                                $("input, textarea, select").attr("disabled", false);
+
+                                $('#btn-submit').html('Simpan').prop("disabled", false);
+                                if(response.status === 422 || response.status === 423) {
+                                    var errors = response.responseJSON.message_data.errors;
+
+                                    $.each(errors, function(key, error) {
+                                        var item = form.find('input[name='+ key +']');
+                                        item = (item.length > 0) ? item : form.find('select[name='+ key +']').parent().addClass('has-error');
+                                        item = (item.length > 0) ? item : form.find('textarea[name='+ key +']');
+                                        item = (item.length > 0) ? item : form.find("input[name='"+ key +"[]']");
+
+                                        item.addClass("is-invalid");
+                                        // $("input[type=text][name=" + key +"]").after('<div class="invalid-feedback validation-invalid-label">' + error +'</div>');
+                                        $('#validation_msg_'+key).html(error);
+                                    });
+
+                                    setTimeout(function() {
+                                        Rats.UI.LoadAnimation.stop(spinner);
+                                        swalInit.fire({
+                                            icon : "error",
+                                            title: "Terjadi kesalahan",
+                                            text : "Periksa kembali data yang anda masukkan",
+                                        });
+                                    }, 500);
+
+
+                                    return false;
+                                }
+
+                                else if (response.status == 401) {
+                                    swalInit.fire({
+                                        icon : "error",
+                                        title: "Session Ended",
+                                        text : "Your session end, please relogin..",
+                                    }).then((result) => {
+                                        window.location = '/login';
+                                    });
+                                }
+
+                                swalInit.fire({
+                                    icon : "error",
+                                    title: "Terjadi kesalahan",
+                                    text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                                }).then((result) => {
+                                    Rats.UI.LoadAnimation.stop(spinner);
+                                });
+
+                                $("input, textarea, select").attr("disabled", false);
+
+                                return false;
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        var d = new Date();
+
+        $('#date_verification, #date_record').datepicker({
+            autoclose:true,
+            todayHighlight:true,
+            dateFormat: 'yy-mm-dd'
+        });
+
+        $('#birthdate').datepicker({
+            autoclose:true,
+            todayHighlight:true,
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-80:+00"
+        });
+
+        $("#date_verification, #date_record").datepicker("setDate", d);
+    });
+
+    var mapArea = function() {
+        return {
+            init : function() {
+                var province_id = 12;
+
+                $.get('/v1/api/regency/lists/' + province_id, function(response) {
+                    $('#regency_id').empty();
+
+                    var options = response.message_data;
+                    $.each(options, function(index, obj){
+                        $('#regency_id').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                    });
+
+                    $("#regency_id").select2();
+                });
+
+                $('#regency_id').change(function() {
+                    var regency_id = $(this).val();
+                    if(regency_id != 0) {
+                        $.get('/v1/api/district/lists/' + regency_id, function(response) {
+                            $('#district_id').empty();
+
+                            var options = response.message_data;
+                            $.each(options, function(index, obj){
+                                $('#district_id').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                            });
+
+                            $("#district_id").select2();
+                            mapArea.resetVillage();
+                        });
+                    }else {
+                        mapArea.resetDistrict();
+                        mapArea.resetVillage();
+                    }
+                });
+
+                $('#district_id').change(function() {
+                    var districts_id = $(this).val();
+                    if(districts_id != 0) {
+                        $.get('/v1/api/village/lists/' + districts_id, function(response) {
+                            $('#map_area').empty();
+
+                            var options = response.message_data;
+                            $.each(options, function(index, obj){
+                                $('#map_area').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                            });
+
+                            $("#map_area").select2();
+                        });
+                    }else {
+                        mapArea.resetVillage();
+                    }
+                });
+            },
+
+            resetDistrict : function() {
+                $('#district_id').empty();
+                var opt_regency = $("<option />", {
+                    value: '0',
+                    text : "PILIH KABUPATEN TERLEBIH DAHULU"
+                });
+
+                $('#district_id').append(opt_regency);
+                $("#district_id").select2();
+            },
+
+            resetVillage : function() {
+                $('#map_area').empty();
+                
+                var opt_village = $("<option />", {
+                    value: '0',
+                    text : "PILIH KECAMATAN TERLEBIH DAHULU"
+                });
+
+                $('#map_area').append(opt_village);
+
+            }
+        };
+    }();
+</script>
+{% endblock %}

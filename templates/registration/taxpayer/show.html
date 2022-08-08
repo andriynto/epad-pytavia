@@ -1,0 +1,738 @@
+{% extends 'layouts/admin.html' %}
+
+{% block title %}Registration Taxpayer{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <!-- Breadcrumb -->
+    <div class="page-header page-header-light">
+        <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline ">
+            <div class="d-flex">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('dashboard_view') }}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                    <a class="breadcrumb-item">Pendataan</a>
+                    <a href="{{ url_for('registration') }}" class="breadcrumb-item">Wajib Pajak</a>
+                    <span class="breadcrumb-item active"><span id="breadcrumb-taxpayer"></span></span>
+                </div>
+            </div>
+
+            <div class="header-elements d-none">
+                <div class="breadcrumb justify-content-center">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb -->
+
+    <div class="content">
+        <div class="alert alert-warning alert-styled-left alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+            <span class="font-weight-semibold">Data usaha tidak ditemukan!</span>, silahkan tambah data usaha dengan mengisi formulir DPD02 terlebih dahulu!
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-light header-elements-inline">
+                <h6 class="card-title">PENDAFTARAN WAJIB PAJAK</h6>
+                <div class="header-elements">
+                    <div class="list-icons" id="list-action">
+                        <!-- <button type="button" class="btn btn-warning btn-labeled btn-labeled-right btn-sm">Cetak Formulir<b><i class="icon-printer"></i></b></button>
+                        <a href="{{ url_for('add_bussiness_registration',id = id ) }}" class="btn btn-primary btn-labeled btn-labeled-left btn-sm"><b><i class="icon-plus2"></i></b> Data Usaha</a> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form action="/tax-registration" id="form-taxpayer" class="form-validate" method="post" accept-charset="utf-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="font-weight-semibold"><i class="icon-magazine"></i> Formulir DPD-01</legend>
+                        </div>
+
+                        <!-- Registrasi -->
+                        <div class="col-md-12">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Nomor Formulir:</label>
+                                <div class="col-md-4 col-lg-4">
+                                    <input type="text" class="form-control" placeholder="Nomor Formulir" autocomplete="off" id="registration_number" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Jenis Transaksi:</label>
+                                <div class="col-md-4 col-lg-6">
+                                    <select data-placeholder="Pilih Jenis Transaksi" name="register_transaction" id="register_transaction" class="form-control form-control-select2 select2-hidden-accessible" data-minimum-results-for-search="Infinity" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off">
+                                        <option value="perekaman">Perekaman Data WP Baru</option>
+                                        <option value="penambahan">Penambahan Fasilitas</option>
+                                        <option value="perubahan">Pengkinian Data WP</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Jenis Wajib Pajak:</label>
+                                <div class="col-lg-9">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-input-styled" name="taxpayer_type" id="personal" value="pribadi" data-fouc autocomplete="off">
+                                            Pribadi
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-input-styled" name="taxpayer_type" id="bussiness_entity" value="badan" data-fouc autocomplete="off">
+                                            Badan Usaha
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" id="search-taxpayer" style="display:none">
+                                <label class="col-lg-3 col-form-label">Pencarian Data Wajib Pajak</label>
+                                <div class="col-md-7 col-lg-7">
+                                    <input type="text" class="form-control" id="autocomplete-taxpayer" placeholder="Silahkan masukkan nama / nomor identitas wajib pajak" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Registrasi -->
+                    </div>
+
+                    <!-- Data Pribadi -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="font-weight-semibold"><i class="icon-reading mr-2"></i> INFORMASI PRIBADI</legend>
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Nama Lengkap: <span class="text-danger">*</span></label>
+                                            <input type="text" name="name" id="name" class="form-control"  placeholder="Nama Lengkap" autocomplete="off" readonly>
+                                            <div id="validation_msg_name" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Nomor Identitas #: <span class="text-danger">*</span></label>
+                                            <input type="text" name="identity_number" id="identity_number" placeholder="Nomor identitas" class="form-control" maxlength="16" autocomplete="off" readonly>
+                                            <div id="validation_msg_identity_number" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Email:</label>
+                                            <input type="email" name="email" id="email" placeholder="Email" class="form-control" autocomplete="off" readonly>
+                                            <div id="validation_msg_email" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Tempat lahir: <span class="text-danger">*</span></label>
+                                            <input type="text" name="birthplace" id="birthplace" class="form-control"  placeholder="Tempat Lahir" autocomplete="off" readonly>
+                                            <div id="validation_msg_birthplace" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Tanggal Lahir: <span class="text-danger">*</span></label>
+                                            <input type="text" name="birthdate" id="birthdate" placeholder="Tanggal Lahir" class="form-control" autocomplete="off" readonly>
+                                            <div id="validation_msg_birthdate" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Kabupaten/Kota: <span class="text-danger">*</span></label>
+                                            <select data-placeholder="Pilih Kabupaten/Kota" name="regency_id" id="regency_id" class="form-control form-control-select2 select2-hidden-accessible" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off"></select>
+                                            <div id="validation_msg_regency_id" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Kecamatan: <span class="text-danger">*</span></label>
+                                            <select data-placeholder="Pilih Kabupaten/Kota Dahulu" name="district_id" id="district_id" class="form-control form-control-select2 select2-hidden-accessible" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off"></select>
+                                            <div id="validation_msg_district_id" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Kelurahan: <span class="text-danger">*</span></label>
+                                            <select data-placeholder="Pilih Kecamatan" name="map_area" id="map_area" class="form-control form-control-select2 select2-hidden-accessible" data-fouc="" tabindex="-1" aria-hidden="true" autocomplete="off"></select>
+                                            <div id="validation_msg_map_area" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">KTP: <span class="text-danger">*</span></label>
+                                            <input name="identitycard_attachment" id="identitycard_attachment" type="file" class="form-input-styled" data-fouc autocomplete="off">
+                                            <span class="form-text text-muted">Accepted formats: gif, png, jpg. Max file size 2Mb</span>
+                                            <div id="validation_msg_identitycard_attachment" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Kartu Keluarga: <span class="text-danger">*</span></label>
+                                            <input type="file" name="familycard_attachment" id="familycard_attachment" class="form-input-styled" data-fouc autocomplete="off">
+                                            <span class="form-text text-muted">Accepted formats: gif, png, jpg. Max file size 2Mb</span>
+                                            <div id="validation_msg_familycard_attachment" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="row">
+                                    <!-- <div class="col-md-6">
+                                        <label class="font-weight-semibold">Foto Profile:</label>
+                                        <div class="media mt-0">
+                                            <div class="mr-3">
+                                                <a href="#">
+                                                    <img src="" class="rounded-round" alt="" width="60" height="60">
+                                                </a>
+                                            </div>
+
+                                            <div class="media-body">
+                                                <input name="photo" id="photo" type="file" class="form-input-styled" data-fouc autocomplete="off">
+                                                <span class="form-text text-muted">Accepted formats: gif, png, jpg. Max file size 2Mb</span>
+                                            </div>
+                                            <div id="validation_msg_photo" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div> -->
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Telepon:</label>
+                                            <input type="text" id="phone" name="phone" placeholder="Telepon" maxlength="12" class="form-control"  autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Handphone:</label>
+                                            <input type="text" id="handphone" name="handphone" placeholder="Handphone" maxlength="16" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Alamat Lengkap: <span class="text-danger">*</span></label>
+                                            <textarea name="address" id="address" rows="3" cols="5" class="form-control" placeholder="Alamat Lengkap" autocomplete="off" readonly></textarea>
+                                            <div id="validation_msg_address" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">RT:</label>
+                                            <input type="text" id="rt_number" name="rt_number" placeholder="RT" maxlength="3" class="form-control"  autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">RW:</label>
+                                            <input type="text" id="rw_number" name="rw_number" placeholder="RW" maxlength="3" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Kode Pos:</label>
+                                            <input type="text" name="zip_code" id="zip_code" placeholder="Kode Pos" maxlength="5" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- End Data Pribadi -->
+
+                    <!-- Data Pekerjaan -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="font-weight-semibold"><i class="icon-file-media mr-2"></i> PEKERJAAN WAJIB PAJAK</legend>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Pekerjaan :<span class="text-danger">*</span></label>
+                                            <select name="occupation" id="occupation" data-placeholder="Select Occupation" class="form-control form-control-select2" data-fouc autocomplete="off">
+                                                <option value="0" selected>Pilih Pekerjaan</option> 
+                                                <option value="PNS">Pegawai Negeri</option> 
+                                                <option value="Swasta">Pegawai Swasta</option> 
+                                                <option value="TNI/Polisi">Polisi/TNI</option> 
+                                                <option value="Wiraswasta">Wiraswasta</option>
+                                                <option value="BUMD">Pegawai BUMD</option>
+                                                <option value="BUMN">Pegawai BUMN</option>
+                                                <option value="Pemilik">Pemilik Usaha</option>
+                                                <option value="Lainnya">Lainnya</option>
+                                            </select>
+                                            <div id="validation_msg_occupation" class="invalid-feedback validation-invalid-label"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Nama Instansi Tempat Bekerja:</label>
+                                            <input type="text" name="working_company" id="working_company" placeholder="Nama Instansi Tempat Bekerja" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Alamat Lengkap:</label>
+                                            <textarea rows="3" cols="5" name="working_company_address" id="working_company_address" class="form-control" placeholder="Alamat Tempat Bekerja" autocomplete="off" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- End Data Pekerjaan -->
+
+                    <!-- Data Perekaman -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <legend class="font-weight-semibold"><i class="icon-reading mr-2"></i> IDENTITAS PENDATA/PEJABAT YANG BERWENANG</legend>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Tanggal Pendataan: <span class="text-danger">*</span></label>
+                                            <input type="text" name="date_record" id="date_record" value="" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">Tanggal Pemeriksaan: <span class="text-danger">*</span></label>
+                                            <input type="text" name="date_verification" id="date_verification" value="" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">NIP Pendata: <span class="text-danger">*</span></label>
+                                            <input type="text" name="record_by" id="record_by" value="" readonly placeholder="NIP Pendata" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-semibold">NIP Verifikasi: <span class="text-danger">*</span></label>
+                                            <input type="text" name="verification_by" id="verification_by" value="" readonly placeholder="NIP Verifikasi" class="form-control" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- End Data Perekaman -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    var pkey = '{{ id }}'
+    document.addEventListener('DOMContentLoaded', function() {
+
+        mapArea.init();
+
+        taxpayer.get(pkey);
+    });
+
+    var taxpayer = function(id) {
+        return {
+            get : function(id) {
+                $.ajax({
+                    url: '/v1/api/taxpayer-registration/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $("input[type=text], input[type=date], textarea").removeClass('is-invalid');
+                        $("input[type=select]").parent().removeClass('has-error');
+                        $('.validation_msg_')
+                        spinner = Rats.UI.LoadAnimation.start();
+                    },
+                    success: function (response) {
+                        $('#btn-submit').html('Simpan').prop("disabled", false);
+                        $("input, textarea, select").attr("disabled", false);
+                        var taxpayer = response.message_data;
+
+                        if(taxpayer.taxpayer_type == 'pribadi') {
+                            $('#personal').prop("checked", true);
+                            $('#bussiness_entity').prop("checked", false);
+                        }else {
+                            $('#bussiness_entity').prop("checked", true);
+                            $('#personal').prop("checked", false);
+                        }
+
+                        $.uniform.update();
+
+                        $('#registration_number').val(taxpayer.registration_number)
+                        $('#name').val(taxpayer.name)
+                        $('#identity_number').val(taxpayer.identity_number)
+                        $('#email').val(taxpayer.email)
+                        $('#birthplace').val(taxpayer.birthplace)
+                        $('#birthdate').val(taxpayer.birthdate)
+                        $('#address').val(taxpayer.address.street)
+                        $('#rw_number').val(taxpayer.address.rw_number)
+                        $('#rt_number').val(taxpayer.address.rt_number)
+                        $('#zip_code').val(taxpayer.address.zip_code)
+
+                        $('#phone').val(taxpayer.contact.phone)
+                        $('#handphone').val(taxpayer.contact.handphone)
+
+                        $('#occupation').val(taxpayer.occupation.name).select2();
+                        $('#working_company').val(taxpayer.occupation.working_company)
+                        $('#working_company_address').val(taxpayer.occupation.working_company_address)
+
+                        $('#date_verification').val(taxpayer.date_verification)
+                        $('#date_record').val(taxpayer.date_record)
+
+                        $('#record_by').val(taxpayer.record_by.nip)
+                        $('#verification_by').val(taxpayer.verification_by.nip)
+
+                        $('#regency_id').val(taxpayer.map_area.regency).select2();
+
+                        $('#breadcrumb-taxpayer').html(taxpayer.name)
+
+                        mapArea.district(taxpayer.map_area.regency, taxpayer.map_area.district);
+
+                        mapArea.village(taxpayer.map_area.district, taxpayer.map_area.village);
+
+                        var btnAction = '<button type="button" class="btn btn-warning btn-labeled btn-labeled-right btn-sm">Cetak Formulir<b><i class="icon-printer"></i></b></button>';
+                        if(jQuery.isEmptyObject(taxpayer.bussiness)) {
+                            $('#list-action').append(
+                                btnAction = btnAction + '<a href="{{ url_for("add_bussiness_registration",id = id ) }}" class="btn btn-primary btn-labeled btn-labeled-left btn-sm"><b><i class="icon-plus2"></i></b> Data Usaha</a>'
+                            )
+                        }else {
+                            if(taxpayer.status == 'Draft' || taxpayer.status == 'Draft') {
+                                btnAction = btnAction + '<button type="button" id="btn-send" class="btn btn-primary btn-labeled btn-labeled-left btn-sm"><b><i class="icon-paperplane"></i></b> Kirim Berkas</a>'
+                            }
+                        }
+
+                        Rats.UI.LoadAnimation.stop(spinner);
+                    },
+                    error  : function(response) {
+                        if (response.readyState == 4) {
+                            $("input, textarea, select").attr("disabled", false);
+
+                            $('#btn-submit').html('Simpan').prop("disabled", false);
+
+                            swalInit.fire({
+                                icon : "error",
+                                title: "Terjadi kesalahan",
+                                text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                            }).then((result) => {
+                                Rats.UI.LoadAnimation.stop(spinner);
+                            });
+
+                            $("input, textarea, select").attr("disabled", false);
+
+                            return false;
+                        }
+                    }
+                });
+            },
+
+            update: function(form) {
+                var taxpayer = new Object();
+                if($('#register_transaction').val().length > 0) {
+                    taxpayer.register_transaction = $('#register_transaction').val()
+                }
+
+                if($('input[name="taxpayer_type"]:checked').val().length > 0) {
+                    taxpayer.taxpayer_type = $('input[name="taxpayer_type"]:checked').val()
+                }
+
+                if($('#name').val().length > 0) {
+                    taxpayer.name = $('#name').val()
+                }
+
+                if($('#identity_number').val().length > 0) {
+                    taxpayer.identity_number = $('#identity_number').val()
+                }
+
+                taxpayer.email = $('#email').val()
+
+                if($('#birthplace').val().length > 0) {
+                    taxpayer.birthplace = $('#birthplace').val()
+                }
+
+                if($('#birthdate').val().length > 0) {
+                    taxpayer.birthdate = $('#birthdate').val()
+                }
+
+                if($('#map_area').val() != "") {
+                    taxpayer.map_area = $('#map_area').val()
+                }
+
+                taxpayer.phone = $('#phone').val()
+                taxpayer.handphone = $('#handphone').val()
+
+                if($('#address').val().length > 0) {
+                    taxpayer.address = $('#address').val()
+                }
+
+                taxpayer.rt_number = $('#rt_number').val()
+                taxpayer.rw_number = $('#rw_number').val()
+                taxpayer.zip_code = $('#zip_code').val()
+
+                if($('#occupation').val().length > 0) {
+                    taxpayer.occupation = $('#occupation').val()
+                }
+
+                taxpayer.working_company = $('#working_company').val()
+                taxpayer.working_company_address = $('#working_company_address').val()
+
+                if($('#date_record').val().length > 0) {
+                    taxpayer.date_record = $('#date_record').val()
+                }
+
+                if($('#date_verification').val().length > 0) {
+                    taxpayer.date_verification = $('#date_verification').val()
+                }
+
+                if($('#record_by').val().length > 0) {
+                    taxpayer.record_by = $('#record_by').val()
+                }
+
+                if($('#verification_by').val().length > 0) {
+                    taxpayer.verification_by = $('#verification_by').val()
+                }
+
+                taxpayer.pkey = pkey
+
+                swalInit.fire({
+                    title: 'Konfirmasi penyimpanan',
+                    text: "Apakah anda menyimpan data wajib pajak ?",
+                    icon: 'info',
+                    buttonsStyling: false,
+                    showCancelButton: true,
+                    reverseButtons : true,
+                    allowOutsideClick: false,
+                    cancelButtonText: 'Batal!',
+                    confirmButtonText: 'Simpan'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url: '/v1/api/taxpayer-registration',
+                            type: 'PUT',
+                            dataType: 'json',
+                            data: JSON.stringify(taxpayer),
+                            contentType: "application/json",
+                            beforeSend: function() {
+                                $("input[type=text], input[type=date], textarea").removeClass('is-invalid');
+                                $("input[type=select]").parent().removeClass('has-error');
+                                $('.validation_msg_')
+                                spinner = Rats.UI.LoadAnimation.start();
+                            },
+                            success: function (response) {
+                                $('#btn-submit').html('Simpan').prop("disabled", false);
+                                $("input, textarea, select").attr("disabled", false);
+                                Rats.UI.LoadAnimation.stop(spinner);
+                                if(response.status_code == 200) {
+                                    swalInit.fire({
+                                        title: 'Pembaharuan berhasil',
+                                        text: "Pembaharuan data wajib pajak berhasil",
+                                        icon: 'success',
+                                        buttonsStyling: false,
+                                        reverseButtons : true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: 'Ok!'
+                                    }).then((result) => {
+                                        window.location.href = '/taxpayer-registration'
+                                    });
+                                }
+                            },
+                            error  : function(response) {
+                                if (response.readyState == 4) {
+                                    $("input, textarea, select").attr("disabled", false);
+
+                                    $('#btn-submit').html('Simpan').prop("disabled", false);
+                                    if(response.status === 422 || response.status === 423) {
+                                        var errors = response.responseJSON.message_data.errors;
+
+                                        $.each(errors, function(key, error) {
+                                            var item = form.find('input[name='+ key +']');
+                                            item = (item.length > 0) ? item : form.find('select[name='+ key +']').parent().addClass('has-error');
+                                            item = (item.length > 0) ? item : form.find('textarea[name='+ key +']');
+                                            item = (item.length > 0) ? item : form.find("input[name='"+ key +"[]']");
+
+                                            item.addClass("is-invalid");
+                                            // $("input[type=text][name=" + key +"]").after('<div class="invalid-feedback validation-invalid-label">' + error +'</div>');
+                                            $('#validation_msg_'+key).html(error);
+                                        });
+
+                                        setTimeout(function() {
+                                            Rats.UI.LoadAnimation.stop(spinner);
+                                            swalInit.fire({
+                                                icon : "error",
+                                                title: "Terjadi kesalahan",
+                                                text : "Periksa kembali data yang anda masukkan",
+                                            });
+                                        }, 500);
+
+
+                                        return false;
+                                    }
+
+                                    else if(response.status == 401) {
+                                        swalInit.fire({
+                                            icon : "error",
+                                            title: "Session Ended",
+                                            text : "Your session end, please relogin..",
+                                        }).then((result) => {
+                                            window.location = '/login';
+                                        });
+                                    }
+
+                                    swalInit.fire({
+                                        icon : "error",
+                                        title: "Terjadi kesalahan",
+                                        text : "Terjadi kesalahan pada aplikasi atau jaringan",
+                                    }).then((result) => {
+                                        Rats.UI.LoadAnimation.stop(spinner);
+                                    });
+
+                                    $("input, textarea, select").attr("disabled", false);
+
+                                    return false;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }();
+
+    var mapArea = function() {
+        return {
+            init : function() {
+                var province_id = 12;
+
+                $.get('/v1/api/regency/lists/' + province_id, function(response) {
+                    $('#regency_id').empty();
+
+                    var options = response.message_data;
+                    $.each(options, function(index, obj){
+                        $('#regency_id').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                    });
+
+                    $("#regency_id").select2();
+                });
+
+                $('#regency_id').change(function() {
+                    var regency_id = $(this).val();
+                    if(regency_id != 0) {
+                        $.get('/v1/api/district/lists/' + regency_id, function(response) {
+                            $('#district_id').empty();
+
+                            var options = response.message_data;
+                            $.each(options, function(index, obj){
+                                $('#district_id').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                            });
+
+                            $("#district_id").select2();
+                            mapArea.resetVillage();
+                        });
+                    }else {
+                        mapArea.resetDistrict();
+                        mapArea.resetVillage();
+                    }
+                });
+
+                $('#district_id').change(function() {
+                    var districts_id = $(this).val();
+                    if(districts_id != 0) {
+                        $.get('/v1/api/village/lists/' + districts_id, function(response) {
+                            $('#map_area').empty();
+
+                            var options = response.message_data;
+                            $.each(options, function(index, obj){
+                                $('#map_area').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                            });
+
+                            $("#map_area").select2();
+                        });
+                    }else {
+                        mapArea.resetVillage();
+                    }
+                });
+            },
+
+            district: function(regency_id, district_id) {
+                $.get('/v1/api/district/lists/' + regency_id, function(response) {
+                    $('#district_id').empty();
+
+                    var options = response.message_data;
+                    $.each(options, function(index, obj){
+                        $('#district_id').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                    });
+
+                    $("#district_id").val(district_id).select2();
+                });
+            },
+
+            village: function(district_id, village_id) {
+                $.get('/v1/api/village/lists/' + district_id, function(response) {
+                    $('#map_area').empty();
+
+                    var options = response.message_data;
+                    $.each(options, function(index, obj){
+                        $('#map_area').append('<option value="'+obj.id+'" data-id="'+obj.id+'">'+obj.name.toUpperCase()+'</option>');
+                    });
+
+                    $("#map_area").val(village_id).select2();
+                });
+            },
+
+            resetDistrict : function() {
+                $('#district_id').empty();
+                var opt_regency = $("<option />", {
+                    value: '0',
+                    text : "PILIH KABUPATEN TERLEBIH DAHULU"
+                });
+
+                $('#district_id').append(opt_regency);
+                $("#district_id").select2();
+            },
+
+            resetVillage : function() {
+                $('#map_area').empty();
+                
+                var opt_village = $("<option />", {
+                    value: '0',
+                    text : "PILIH KECAMATAN TERLEBIH DAHULU"
+                });
+
+                $('#map_area').append(opt_village);
+
+            }
+        };
+    }();
+</script>
+{% endblock %}
